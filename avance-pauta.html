@@ -152,13 +152,10 @@
   .c-meta .k { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
   .c-meta.plan-line .verdict.critical { color: var(--bad); font-weight: 600; }
   .c-meta.plan-line .verdict.good { color: var(--good); font-weight: 600; }
-  .c-pace { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding-top: 6px; }
-  .c-pace .pace-track { flex: 1; height: 6px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
-  .c-pace .pace-fill { height: 100%; border-radius: 4px; background: var(--accent); }
-  .c-pace .pace-fill.critical { background: var(--bad); }
-  .c-pace .pace-fill.good { background: var(--good); }
-  .c-pace .pace-label { font-size: 11px; color: var(--muted); white-space: nowrap; min-width: 230px; text-align: right; }
-  .c-pace .pace-label strong { color: var(--ink); }
+  .c-meta.pace-line { grid-column: 1 / -1; }
+  .c-meta.pace-line strong { color: var(--ink); font-weight: 700; }
+  .c-meta.pace-line strong.critical { color: var(--bad); }
+  .c-meta.pace-line strong.good { color: var(--good); }
   .paused-note { font-size: 11.5px; color: var(--muted); font-style: italic; }
 
   .c-insight { grid-column: 1 / -1; display: flex; gap: 9px; align-items: flex-start; background: var(--surface-2); border-radius: 10px; padding: 9px 13px; margin-top: 2px; }
@@ -172,7 +169,6 @@
     .c-top { grid-template-columns: 1fr; text-align: left; }
     .c-result, .c-cost, .c-extra { text-align: left; }
     .c-meta-row { grid-template-columns: 1fr; }
-    .c-pace .pace-label { text-align: left; min-width: 0; }
     .campaign { flex-direction: column; }
   }
 
@@ -609,11 +605,14 @@ function renderCampaign(c) {
         <div class="c-meta-row">
           <div class="c-meta"><span class="k">Público</span>${c.audience}</div>
           <div class="c-meta plan-line"><span class="k">Según el plan</span>${c.planLabel} &middot; <span class="verdict ${c.verdictFlag}">${c.verdict}</span></div>
+          ${(c.pacePlanned !== undefined) ? `<div class="c-meta pace-line"><span class="k">Presupuesto del conjunto</span><strong class="${c.paceFlag}">${c.pacePct}%</strong> de ${fmtCOP(c.pacePlanned)} ${c.pacePeriodLabel || "de agosto (vencido)"} &middot; ${fmtCOP(c.paceSpent)} gastado</div>` : ""}
           <div class="c-insight"><span class="k">Insight</span><p>${c.insight}</p></div>
         </div>
       </div>
     </div>`;
   }
+
+  const paceLine = (c.pacePlanned !== undefined) ? `<div class="c-meta pace-line"><span class="k">Presupuesto del conjunto</span><strong class="${c.paceFlag}">${c.pacePct}%</strong> de ${fmtCOP(c.pacePlanned)} ${c.pacePeriodLabel || "de agosto (vencido)"} &middot; ${fmtCOP(c.paceSpent)} gastado esta semana</div>` : "";
 
   return `<div class="campaign">
     ${thumb}
@@ -630,6 +629,7 @@ function renderCampaign(c) {
       <div class="c-meta-row">
         <div class="c-meta"><span class="k">Público</span>${c.audience}</div>
         <div class="c-meta plan-line"><span class="k">Según el plan</span>${c.planLabel} &rarr; real: ${c.actualLabel} &middot; <span class="verdict ${c.verdictFlag}">${c.verdict}</span></div>
+        ${paceLine}
         <div class="c-insight"><span class="k">Insight</span><p>${c.insight}</p></div>
       </div>
     </div>
